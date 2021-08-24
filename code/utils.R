@@ -17,9 +17,10 @@ interaction_mdl <- function(data, feature, type){
       main <- summary(mdl)$coef[2:4,1]
       pvals <- summary(mdl)$coef[2:4,4]
       
-      mdl_lc <- glht(mdl, linfct = c("BirthGender + GenderXPandemic = 0",
-                                     "Pandemic + GenderXPandemic=0"))
+      mdl_lc <- glht(mdl, linfct = c("BirthGender + GenderXPandemic=0"))
       extra_pvals <- summary(mdl_lc)$test$pvalues
+      mdl_lc <- glht(mdl, linfct = c("Pandemic + GenderXPandemic=0"))
+      extra_pvals <- c(extra_pvals, summary(mdl_lc)$test$pvalues)
 
       all_output <- c(main[1], pvals[1], main[1] + main[3], extra_pvals[1], 
                       main[2], pvals[2], main[2] + main[3], extra_pvals[2],
@@ -39,9 +40,10 @@ interaction_mdl <- function(data, feature, type){
         mdl <- glm(fmla, new_data, family = binomial()) 
         main <- summary(mdl)$coef[2:4,1]
         pvals <- summary(mdl)$coef[2:4,4]
-        mdl_lc <- glht(mdl, linfct = c("BirthGender + GenderXPandemic=0",
-                                     "Pandemic + GenderXPandemic=0"))
+        mdl_lc <- glht(mdl, linfct = c("BirthGender + GenderXPandemic=0"))
         extra_pvals <- summary(mdl_lc)$test$pvalues
+        mdl_lc <- glht(mdl, linfct = c("Pandemic + GenderXPandemic=0"))
+        extra_pvals <- c(extra_pvals, summary(mdl_lc)$test$pvalues)
   
         new_output <- c(main[1], pvals[1], main[1] + main[3], extra_pvals[1], 
                         main[2], pvals[2], main[2] + main[3], extra_pvals[2], 
@@ -51,7 +53,7 @@ interaction_mdl <- function(data, feature, type){
       }
     }
   
-  output <- all_output %>% mutate(num_missing = num_missing, perc_missing = perc_missing)
+  output <- all_output 
   return(output)
 }
 

@@ -41,6 +41,6 @@ names(cat_res) <- c("Characteristic", "Category", "Prop.", "Weighted Prop.",
                     "# of Samples", "P-value")
 
 ## Store the results
-write_delim(cat_res, "../results/demographics.txt", delim = " ")
+write_csv(cat_res, "../results/demographics.csv")
 cat("done.\n")
 

@@ -26,23 +26,25 @@ data <- read_sas(file_dir) %>%
 data$BMIGrp <- cut(data$BMI, breaks = c(0, 18.5, 25, 30, Inf)) 
 
 ## Analyze characteristics corresponding to the use of internet to find information
-feature_list <- c("Electronic_SelfHealthInfo", "Electronic_TalkDoctor",
-                  "Electronic_TestResults", "Electronic_MadeAppts", 
-                  "TabletHealthWellnessApps", "UsedHealthWellnessApps", 
-                  "Tablet_AchieveGoal", "Tablet_MakeDecision", 
-                  "Tablet_DiscussionsHCP", "WearableDevTrackHealth",
-                  "FreqWearDevTrackHealth", "WillingShareData_HCP", 
-                  "WillingShareData_YourFamily", "WillingShareData_YourFriends", 
-                  "SharedHealthDeviceInfo", "IntRsn_VisitedSocNet", 
-                  "IntRsn_SharedSocNet", "IntRsn_SupportGroup", 
-                  "IntRsn_YouTube")
+feature_list <- c("Electronic_MadeAppts", "Electronic_SelfHealthInfo", 
+                  "Electronic_TalkDoctor", "Electronic_TestResults",                   
+                  "FreqWearDevTrackHealth", "IntRsn_SharedSocNet",
+                  "IntRsn_SupportGroup", "IntRsn_VisitedSocNet", 
+                  "IntRsn_YouTube","SharedHealthDeviceInfo",
+                  "Tablet_AchieveGoal", "Tablet_DiscussionsHCP",
+                  "Tablet_MakeDecision", "TabletHealthWellnessApps", 
+                  "UsedHealthWellnessApps", "WearableDevTrackHealth",
+                  "WillingShareData_HCP", "WillingShareData_YourFamily",
+                  "WillingShareData_YourFriends")
 result <- lapply(feature_list, interaction_mdl, data = data, type = "discrete") 
 result <- do.call("rbind", result)
-colnames(result) <- c("Gender (pre)", "pval", "Gender (post)", "pval", 
-                      "Pandemic (male)", "pval", "Pandemic (female).", "pval",
-                      "Gender x Pan.", "pval", "feature", "level", "# missing", "% missing")
+colnames(result) <- c("gender_pre", "pval_gender_pre", "gender_post", "pval_gender_post", 
+                      "pandemic_male", "pval_pandemic_male", "pandemic_female", "pval_pandemic_female",
+                      "gender_pandemic", "gender_pandemic_pval", "feature", "level")
+result <- cbind(result[,11:12], result[,1:10])
+
 ## Store the results 
-write_delim(result, "../results/internet.txt", delim = " ")
+write_csv(result, "../results/table_2_use_of_internet.csv")
 
 ## Mental health
 ## Continuous responses
@@ -58,13 +60,13 @@ new_result <- interaction_mdl(data, "MostImportantValues", "discrete")
 result <- rbind(result, new_result)
 
 ## Attach the feature names
-colnames(result) <- c("Gender (pre)", "pval", "Gender (post)", "pval", 
-                      "Pandemic (male)", "pval", "Pandemic (female).", "pval",
-                      "Gender x Pan.", "pval", "feature", "level", 
-                      "# missing", "% missing")
+colnames(result) <- c("gender_pre", "pval_gender_pre", "gender_post", "pval_gender_post", 
+                      "pandemic_male", "pval_pandemic_male", "pandemic_female", "pval_pandemic_female",
+                      "gender_pandemic", "gender_pandemic_pval", "feature", "level")
+result <- cbind(result[,11:12], result[,1:10])
 
 ## Store the results
-write_delim(result, "../results/mental.txt", delim = " ")
+write_csv(result, "../results/table_3_mental_health.csv")
 
 ## Alcohol
 ## Continuous responses
@@ -75,18 +77,20 @@ result <- do.call("rbind", result)
 ## Discrete responses
 new_result <- interaction_mdl(data, "DrinksOneOccasion", "discrete")
 result <- rbind(result, new_result)
-colnames(result) <- c("Gender (pre)", "pval", "Gender (post)", "pval", 
-                      "Pandemic (male)", "pval", "Pandemic (female).", "pval",
-                      "Gender x Pan.", "pval", "feature", "level", "# missing", "% missing")
-write_delim(result, "../results/alcohol.txt", delim = " ")
+colnames(result) <- c("gender_pre", "pval_gender_pre", "gender_post", "pval_gender_post", 
+                      "pandemic_male", "pval_pandemic_male", "pandemic_female", "pval_pandemic_female",
+                      "gender_pandemic", "gender_pandemic_pval", "feature", "level")
+result <- cbind(result[,11:12], result[,1:10])
+write_csv(result, "../results/table_4_alcohol_use.csv")
 
 ## Physical Activity
 feature_list <- c("HowLongModerateExerciseMinutes", "AverageTimeSitting", "TimesStrengthTraining")
 result <- lapply(feature_list, interaction_mdl, data = data, type = "cts")
 result <- do.call("rbind", result)
-colnames(result) <- c("Gender (pre)", "pval", "Gender (post)", "pval", 
-                      "Pandemic (male)", "pval", "Pandemic (female).", "pval",
-                      "Gender x Pan.", "pval", "feature", "level", "# missing", "% missing")
-write_delim(result, "../results/activity.txt", delim = " ")
-cat("done.")
+colnames(result) <- c("gender_pre", "pval_gender_pre", "gender_post", "pval_gender_post", 
+                      "pandemic_male", "pval_pandemic_male", "pandemic_female", "pval_pandemic_female",
+                      "gender_pandemic", "gender_pandemic_pval", "feature", "level")
+result <- cbind(result[,11:12], result[,1:10])
+write_csv(result, "../results/activity.csv")
+cat("done.\n")
 
