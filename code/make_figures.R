@@ -1,9 +1,6 @@
 ## Load packages
 suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(haven))
-suppressPackageStartupMessages(library(kableExtra))
-suppressPackageStartupMessages(library(nnet))
-suppressPackageStartupMessages(library(foreign))
 suppressPackageStartupMessages(library(multcomp))
 
 ## Source utility functions
